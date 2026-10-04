@@ -1,8 +1,7 @@
 ## 3. Classificador com CNN Pré-treinada
 
 > Notebook: `A3_cnn_kaggle.ipynb` · Repositório: https://github.com/GiovanniAsantos/A3_cnn_transfer_learning
-> Execução completa de referência: ~32 min em CPU, RAM de ~1,1 GB. No Google Colab (GPU T4), o tempo estimado é de
-> ~8–12 min, com ~1–2 GB de VRAM (estimativa, não medida).
+> Execução completa no Google Colab (GPU T4): ~5,7 min, pico de VRAM de 0,86 GB, RAM de 2,9 GB.
 
 ### 3.1 Definição do problema
 
@@ -57,7 +56,7 @@ A escolha considerou três fatores:
   gatos, *mountain bike*, *sports car*, *daisy*, *sorrel* etc. Com essa sobreposição, o que importa é a qualidade da
   representação congelada, e a ResNet-50 tem o maior top-1.
 - **Colab T4.** Em feature extraction não há backward pelo backbone nem estados do otimizador para ele: é só uma
-  passada de inferência, com ~1–2 GB de VRAM em batch 64, bem abaixo dos 15 GB da T4. Os 10× mais FLOPs que a
+  passada de inferência, com 0,82 GB de VRAM em batch 64 (medido), bem abaixo dos 15 GB da T4. Os 10× mais FLOPs que a
   EfficientNet-B0 custam segundos com ~1,7 mil imagens.
 - **Número de classes.** Com 7 classes, o head é um `Linear(2048, 7)`: **14.343 parâmetros treináveis**, cerca de 12
   por imagem de treino. É pouco para um head linear, e o risco de overfitting é controlável.
@@ -78,7 +77,7 @@ fine-tuning completo com pouca memória.
   sempre a mesma. As features (2048-d, após o global average pool) foram extraídas uma única vez. Treinar o `fc` sobre
   esse cache é matematicamente equivalente a treinar o modelo completo com backbone congelado. Uma célula de verificação
   confirma isso: o modelo completo aplicado às imagens e o head aplicado ao cache dão as mesmas probabilidades
-  (Δ máximo = 0).
+  (Δ máximo < 1e-6, a precisão do float32).
 - **Robustez:** o mesmo treino foi repetido com 5 seeds.
 
 **Diagnóstico complementar.**
@@ -162,7 +161,7 @@ no global):
 | matiz +0,25 | −0,019 | +0,016 | 0 | −0,033 | 0 | 0 | 0 | −0,004 |
 | jitter brilho/contraste/saturação | −0,019 | 0 | 0 | 0 | 0 | 0 | 0 | −0,004 |
 | zoom 50% do lado | −0,056 | −0,016 | −0,064 | −0,067 | 0 | 0 | 0 | −0,031 |
-| zoom 35% do lado | **−0,093** | **−0,111** | −0,032 | **−0,300** | 0 | 0 | −0,077 | **−0,092** |
+| zoom 35% do lado | **−0,111** | **−0,095** | −0,032 | **−0,300** | 0 | 0 | −0,077 | **−0,092** |
 | resize sem crop | 0 | +0,016 | 0 | −0,033 | 0 | 0 | 0 | 0,000 |
 | baixa resolução 64 px | **−0,204** | 0 | 0 | −0,067 | 0 | 0 | −0,038 | −0,053 |
 
@@ -174,7 +173,7 @@ no global):
 |---|---|---|
 | ImageNet (padrão dos pesos) | **0,9924** | 0,995 |
 | Média e desvio do dataset | 0,9924 | 0,995 |
-| Sem normalização ([0,1]) | 0,9847 | 0,987 |
+| Sem normalização ([0,1]) | 0,9860 ± 0,0018 | 0,989 |
 
 A média e o desvio do dataset (0,485 / 0,453 / 0,396) são praticamente os do ImageNet (0,485 / 0,456 / 0,406).
 
@@ -182,11 +181,14 @@ A média e o desvio do dataset (0,485 / 0,453 / 0,396) são praticamente os do I
 
 | Augmentation | Teste limpo | Teste transformado (média) | Maior ganho | Maior perda |
 |---|---|---|---|---|
-| Nenhuma | 0,9924 | 0,9728 | — | — |
-| Geométrica | 0,9924 | 0,9717 | matiz +0,5 p.p. | flip vertical −1,1 p.p. |
-| Cor | 0,9924 | 0,9728 | matiz +0,4 p.p. | zoom 35% −0,6 p.p. |
-| Escala | 0,9924 | 0,9759 | **zoom 35% +2,5 p.p.** · baixa resolução +1,2 p.p. | flip vertical −0,5 p.p. |
-| **Combinada** | 0,9924 | **0,9769** | **baixa resolução +1,9 p.p.** · flip vertical +0,6 · grayscale +0,5 | rotação 15° −0,3 p.p. |
+| Nenhuma | 0,9924 | 0,9721 | — | — |
+| Geométrica | 0,9924 | 0,9755 | baixa resolução +0,9 · rotação 15° +0,8 · jitter +0,8 p.p. | rotação 90° −0,5 p.p. |
+| Cor | **0,9898** (`bike` 0,969) | 0,9717 | baixa resolução +0,6 · jitter +0,4 p.p. | rotação 15° −0,9 p.p. |
+| **Escala** | 0,9924 | **0,9762** | **zoom 35% +1,3 · zoom 50% +1,2** · grayscale +0,8 p.p. | flip vertical −0,3 · rotação 15° −0,3 p.p. |
+| Combinada | 0,9924 | 0,9749 | **baixa resolução +1,3** · zoom 35% +0,6 · squash +0,6 p.p. | rotação 15° −0,4 p.p. |
+
+Numa execução anterior em CPU, com outras vistas aleatórias, a combinada ficou em primeiro (0,9769) e a escala deu
++2,5 p.p. no zoom 35%. A ordem entre as famílias varia ~1 p.p. entre execuções, mas os padrões se repetem.
 
 ![Exemplos de vistas aumentadas](figures/augment_exemplos.png)
 
@@ -194,10 +196,10 @@ A média e o desvio do dataset (0,485 / 0,453 / 0,396) são praticamente os do I
 
 **ResNet-50 vs. EfficientNet-B0** (mesmo protocolo, 3 seeds):
 
-| Backbone | Parâmetros treináveis | Tempo de extração (CPU) | Accuracy no teste | F1 macro |
+| Backbone | Parâmetros treináveis | Tempo de extração (T4) | Accuracy no teste | F1 macro |
 |---|---|---|---|---|
-| **ResNet-50** | 14.343 | 129 s | **0,9924** | **0,995** |
-| EfficientNet-B0 | 8.967 | 41 s | 0,9847 | 0,984 |
+| **ResNet-50** | 14.343 | 7,8 s | **0,9924** | **0,995** |
+| EfficientNet-B0 | 8.967 | 4,8 s | 0,9847 | 0,984 |
 
 ### 3.4 Análise crítica
 
@@ -208,7 +210,7 @@ independentes mostram isso:
 - o t-SNE separa as 7 classes **sem nenhum treino**;
 - o head ImageNet original já reconhece *mountain bike*, *tabby* e *sorrel* nas classes certas.
 
-As curvas não mostram overfitting: a loss de validação cai monotonicamente até 0,029, e o gap de treino (0,0125) é o
+As curvas não mostram overfitting: a loss de validação cai monotonicamente até 0,028, e o gap de treino (0,012) é o
 esperado para um modelo de 14 mil parâmetros.
 
 O desvio-padrão zero entre as 5 seeds não é um bug. Um head linear com cross-entropy e L2 é uma regressão logística
@@ -242,10 +244,10 @@ pode ser pequeno. Em `cars`, o head ImageNet espalha as predições por 73 class
 | **Rotação leve (±10°)** | Sim, leve | 15° custa 1 imagem em `dogs` e outra em `human`. Simula câmeras inclinadas em fotos amadoras | `human` e `dogs` (pose vertical característica). Os cantos pretos viram artefato: preferir preenchimento por reflexão |
 | **Recorte aleatório (translação)** | Com cautela | A auditoria mostrou 5 imagens `bike` que já perdem a bicicleta no center crop | **`bike` e `cars`**: no Graz-02 o objeto costuma estar na borda da cena, e o recorte pode gerar um exemplo com rótulo efetivamente errado |
 | **Flip vertical / rotação 90°** | Não | Flip vertical: `dogs` −0,10, `human` −0,04 | Animais e pessoas (`dogs`, `cats`, `human`, `horses`) |
-| **Color jitter (brilho/contraste/saturação)** | Sim, moderado | Robustez a jitter e matiz +0,3 a +0,5 p.p. As classes vêm de câmeras e fontes diferentes, e o jitter evita usar a "paleta da fonte" como pista | Matiz forte (> 0,05) gera cores irreais para `horses` (alazão) e `flowers`. Os dados mostram que `flowers` tolera, mas não há ganho em exagerar |
-| **Grayscale aleatório (p ≈ 0,1)** | Sim | **Remove o atalho espúrio "P&B ⇒ human"** (10,4% de `human` é P&B, contra ≤ 4,3% nas outras). Com a augmentation combinada, a accuracy em grayscale foi de 0,987 para 0,992 | `bike` foi a classe mais sensível (−0,037, bike → cars). `flowers`, contra a intuição, **não** foi afetada: a forma radial das pétalas basta |
-| **Escala (`RandomResizedCrop`, multi-scale)** | Sim, com escala mínima de 0,35–0,5 | É a maior fragilidade medida: zoom de 35% do lado custa −0,092 no global. Treinar com escala recupera +2,5 p.p. nesse caso | Com o padrão `scale=(0,08; 1)`: **`cars` e `bike`** (veículo cortado fora) e **`dogs`** (close de pelo vira "gato": −0,30). `flowers` e `horses` são imunes |
-| **Normalização ImageNet** | Obrigatória | Sem ela, −0,8 p.p.; as estatísticas do dataset dão o mesmo resultado. É a convenção dos pesos e das médias móveis de BatchNorm congeladas | Nenhuma. É uma condição de correção, não uma augmentation |
+| **Color jitter (brilho/contraste/saturação)** | Sim, leve | O jitter leve da combinada mantém o teste limpo e dá +0,4 p.p. no teste com jitter; o jitter forte da família cor custou 1 imagem de `bike` no limpo. As classes vêm de câmeras e fontes diferentes, e o jitter evita usar a "paleta da fonte" como pista | **`bike`**, a classe mais sensível à cor. Matiz forte (> 0,05) também gera cores irreais para `horses` (alazão) e `flowers`, embora `flowers` tenha tolerado |
+| **Grayscale aleatório (p ≈ 0,1)** | Sim, com p baixo | **Remove o atalho espúrio "P&B ⇒ human"** (10,4% de `human` é P&B, contra ≤ 4,3% nas outras). Com a combinada (p = 0,1), a accuracy em grayscale foi de 0,987 para 0,991 sem custo no limpo; com p = 0,2 (família cor), `bike` piorou | `bike` foi a classe mais sensível (−0,037, bike → cars). `flowers`, contra a intuição, **não** foi afetada: a forma radial das pétalas basta |
+| **Escala (`RandomResizedCrop`, multi-scale)** | Sim, com escala mínima de 0,35–0,5 | É a maior fragilidade medida: zoom de 35% do lado custa −0,092 no global. Treinar com escala dá a melhor robustez média (+0,4 p.p.) e recupera +1,3 p.p. nesse caso | Com o padrão `scale=(0,08; 1)`: **`cars` e `bike`** (veículo cortado fora) e **`dogs`** (close de pelo vira "gato": −0,30). `flowers` e `horses` são imunes |
+| **Normalização ImageNet** | Obrigatória | Sem ela, −0,6 p.p.; as estatísticas do dataset dão o mesmo resultado. É a convenção dos pesos e das médias móveis de BatchNorm congeladas | Nenhuma. É uma condição de correção, não uma augmentation |
 
 Três achados contrariam a intuição inicial:
 
@@ -257,9 +259,10 @@ Três achados contrariam a intuição inicial:
 - **O que derruba o modelo é o recorte agressivo**, não a cor. É exatamente a operação que o `RandomResizedCrop`
   padrão aplica.
 
-**Limite da augmentation com backbone congelado.** No teste limpo, nenhuma família muda o resultado: todas dão 0,9924,
-com os mesmos 2 erros. O problema está no teto, e os erros são cenas ambíguas. O ganho aparece na robustez (até +2,5
-p.p.) e é pequeno porque, com o backbone congelado, a augmentation só ensina o *head* a lidar com as features de
+**Limite da augmentation com backbone congelado.** No teste limpo, nenhuma família melhora o resultado: geométrica,
+escala e combinada mantêm 0,9924, com os mesmos 2 erros, e a família cor piora `bike` (0,981 → 0,969), a classe mais
+sensível à cor no §3.3. O problema está no teto, e os erros são cenas ambíguas. O ganho aparece na robustez (+1,3 p.p.
+nesta execução, +2,5 p.p. numa execução anterior em CPU) e é pequeno porque, com o backbone congelado, a augmentation só ensina o *head* a lidar com as features de
 imagens transformadas: **as features em si não ficam invariantes**. Augmentation rende de verdade quando acompanha o
 fine-tuning das camadas convolucionais.
 
@@ -268,7 +271,7 @@ Configuração proposta para o próximo experimento:
 - **treino:** `RandomResizedCrop(224, scale=(0,5; 1))` + flip horizontal + rotação ±10° (preenchimento por reflexão)
   + jitter leve (0,2; matiz 0,02) + grayscale (p = 0,1) + normalização ImageNet;
 - **avaliação:** `Resize((224, 224))` sem crop, que foi neutro e preserva os objetos da borda;
-- **nunca:** flip vertical.
+- **nunca:** flip vertical, rotações grandes e cor forte (matiz > 0,05, grayscale > 0,1), por causa de `bike`.
 
 **Feature extraction vs. fine-tuning.** A decisão depende de dois eixos: o tamanho do dataset e a distância do domínio
 para o pré-treino.
@@ -317,7 +320,8 @@ porque os dois eixos são opostos.
   menor e não foi medido.
 - O Graz-02 atribui um único rótulo a cenas com vários objetos.
 - O fine-tuning foi discutido, mas não executado.
-- A execução de referência foi feita em CPU, e o tempo na T4 é uma estimativa.
+- As vistas aleatórias da augmentation mudam entre ambientes (CPU/GPU, número de workers). A ordem das famílias variou
+  ~1 p.p. entre a execução local e a do Colab, mas as conclusões qualitativas se mantiveram.
 
 **Referências desta seção.**
 

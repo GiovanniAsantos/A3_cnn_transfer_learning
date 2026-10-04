@@ -22,18 +22,19 @@ que roda do início ao fim no **Google Colab (GPU T4)** sem edições.
 
 - **Feature extraction correta e verificada.** Backbone com `requires_grad=False` e em `eval()`, `fc` trocado por
   `Linear(2048, 7)`: **14.343 parâmetros treináveis (0,06%)**, um treino. Uma célula prova que o modelo completo e o
-  head sobre as features em cache dão as mesmas probabilidades (Δ = 0).
+  head sobre as features em cache dão as mesmas probabilidades (Δ < 1e-6, precisão float32).
 - **Accuracy de test 0,992** (260/262), F1 macro 0,995. Cinco classes com 1,000; os dois erros são cenas de rua
   ambíguas (`bike` ↔ `cars`). O resultado é **idêntico em 5 seeds**, porque o head linear com L2 é um problema convexo.
 - **Dataset auditado antes de treinar.** Foram encontradas uma cópia inteira em `data/data`, **39 duplicatas exatas e
   22 near-duplicates** (por hash perceptual) e **viés de fonte** (cada classe tem formato e resolução próprios). Também
   apareceu `human` com 10% de fotos P&B, contra ≤ 4% nas outras classes.
 - **Augmentation com evidência, por classe.** 11 transformações aplicadas ao test mostram o que cada classe tolera:
-  **zoom agressivo derruba `dogs` −0,30, `cars` −0,11, `bike` −0,09**; cor e grayscale quase não afetam, **nem
+  **zoom agressivo derruba `dogs` −0,30, `bike` −0,11, `cars` −0,10**; cor e grayscale quase não afetam, **nem
   `flowers`**; flip vertical prejudica animais e pessoas.
-- **Normalização e augmentation testadas, não só discutidas.** Sem a normalização ImageNet, −0,8 p.p. Com augmentation
-  no treino do head, o test limpo não muda (teto) e a robustez sobe até +2,5 p.p. (escala → zoom), o limite do que um
-  backbone congelado permite.
+- **Normalização e augmentation testadas, não só discutidas.** Sem a normalização ImageNet, −0,6 p.p. Com augmentation
+  no treino do head, o test limpo não melhora (teto), cor forte piora `bike`, e a robustez sobe até +1,3 p.p. (escala →
+  zoom; combinada → baixa resolução). É o limite do que um backbone congelado permite.
+- **Roda em ~6 min na T4** (medido no Colab: 0,86 GB de VRAM de pico).
 
 ## O que o projeto faz
 
@@ -73,7 +74,7 @@ falhar, o notebook pede o `kaggle.json`, que **nunca é versionado** (está no `
   treino**.
 - **Tamanho:** 1.219 imagens de treino contra 23,5 M parâmetros no backbone. Treinar só o head (~12 parâmetros por
   imagem) evita overfitting.
-- **T4:** sem backward pelo backbone, é só uma passada de inferência (~1–2 GB de VRAM). A ResNet-50 tem o maior top-1
+- **T4:** sem backward pelo backbone, é só uma passada de inferência (0,82 GB de VRAM com batch 64, ~290 imagens/s). A ResNet-50 tem o maior top-1
   dos candidatos (80,9% com os pesos V2), e a EfficientNet-B0 erra 4 imagens de test contra 2.
 - **7 classes:** `Linear(2048, 7)` basta, sem pressão por head ou backbone maiores.
 
@@ -103,14 +104,15 @@ pip install -r requirements.txt
 **Colab (recomendado, GPU T4).** Abrir `A3_cnn_kaggle.ipynb`, selecionar o runtime **T4** e executar todas as
 células. O dataset (~1 GB) é baixado via `kagglehub`. A última célula compacta `figures/` + `results.json` e baixa o zip.
 
-| Recurso | Valor |
+| Recurso | Medido (Colab T4) |
 |---|---|
-| Tempo total | **~32 min medidos em CPU** (execução de referência) · **~8–12 min estimados na T4** (não medido) |
-| VRAM | ~1–2 GB estimado (só inferência) |
-| RAM | ~1,1 GB (medido) |
+| Tempo total | **~5,7 min** (dataset ~1,1 min · extração das augmentations ~2 min · treinos dos heads ~1 min · demais < 30 s cada) |
+| VRAM (pico) | 0,86 GB |
+| RAM | ~2,9 GB |
 | Disco | ~1,1 GB |
 
-O custo dominante é a extração das 4 famílias de augmentation (3 vistas × 1.219 imagens cada, ~60% do tempo).
+O custo dominante é a extração das 4 famílias de augmentation (3 vistas × 1.219 imagens cada). Em CPU, a execução
+completa leva ~32 min.
 
 **Local.** Executar o notebook a partir desta pasta; o `kagglehub` reaproveita o cache do download. Em CPU, para
 testar o fluxo mais rápido, reduzir `K_VIEWS` (§3.2.c).
@@ -123,7 +125,8 @@ testar o fluxo mais rápido, reduzir `K_VIEWS` (§3.2.c).
 |---|---|---|---|---|---|---|---|---|
 | Accuracy | 0,981 | 0,984 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 | **0,992** |
 
-Balanced accuracy 0,995 · F1 macro 0,995 · validação 0,992 · desvio-padrão entre 5 seeds = 0.
+Balanced accuracy 0,995 · F1 macro 0,995 · validação 0,992 · desvio-padrão entre 5 seeds = 0. Resultado idêntico
+em CPU e na T4.
 
 | Curvas de treino do head | Matriz de confusão e accuracy por classe |
 |---|---|
@@ -136,7 +139,7 @@ Balanced accuracy 0,995 · F1 macro 0,995 · validação 0,992 · desvio-padrão
 | flip horizontal | — | −0,004 |
 | flip vertical | dogs −0,10 · human −0,04 | −0,011 |
 | grayscale / matiz / jitter | bike −0,02 a −0,04 (flowers 0) | −0,004 a −0,008 |
-| zoom 35% do lado | **dogs −0,30 · cars −0,11 · bike −0,09** · human −0,08 | **−0,092** |
+| zoom 35% do lado | **dogs −0,30 · bike −0,11 · cars −0,10** · human −0,08 | **−0,092** |
 | baixa resolução 64 px | **bike −0,20** | −0,053 |
 | resize sem crop | — | 0,000 |
 
@@ -146,13 +149,17 @@ Balanced accuracy 0,995 · F1 macro 0,995 · validação 0,992 · desvio-padrão
 
 | Augmentation | Test limpo | Test transformado (média) |
 |---|---|---|
-| nenhuma | 0,9924 | 0,9728 |
-| geométrica | 0,9924 | 0,9717 |
-| cor | 0,9924 | 0,9728 |
-| escala | 0,9924 | 0,9759 (zoom 35%: +2,5 p.p.) |
-| **combinada** | 0,9924 | **0,9769** (baixa resolução: +1,9 p.p.) |
+| nenhuma | 0,9924 | 0,9721 |
+| geométrica | 0,9924 | 0,9755 |
+| cor | **0,9898** (`bike` 0,981 → 0,969) | 0,9717 |
+| **escala** | 0,9924 | **0,9762** (zoom 35%: +1,3 p.p.; zoom 50%: +1,2 p.p.) |
+| combinada | 0,9924 | 0,9749 (baixa resolução: +1,3 p.p.) |
 
-**Normalização:** ImageNet 0,9924 · estatísticas do dataset 0,9924 · sem normalização 0,9847.
+Numa execução anterior em CPU, com outras vistas aleatórias, a combinada ficou em primeiro e a escala deu +2,5 p.p. no
+zoom. A ordem entre as famílias varia ~1 p.p.; os padrões (limpo sem ganho, escala → zoom, combinada → baixa
+resolução, cor sozinha sem ganho) se repetem.
+
+**Normalização:** ImageNet 0,9924 · estatísticas do dataset 0,9924 · sem normalização 0,9860 ± 0,0018.
 
 | t-SNE das features congeladas (sem treino) | Auditoria: `bike` sem bicicleta após o center crop |
 |---|---|
@@ -160,7 +167,7 @@ Balanced accuracy 0,995 · F1 macro 0,995 · validação 0,992 · desvio-padrão
 
 **Recomendação de augmentation:** flip horizontal, rotação ±10°, `RandomResizedCrop(scale=(0,5; 1))` (nunca o 0,08
 padrão: corta `cars` e `bike` e confunde `dogs`), jitter leve, grayscale p=0,1 (remove o atalho "P&B ⇒ human") e
-normalização ImageNet. Sem flip vertical.
+normalização ImageNet. Sem flip vertical e sem cor forte (prejudica `bike`).
 
 ## Status (checklist da rubrica)
 

@@ -1,0 +1,30 @@
+# dados e artefatos pesados (nao versionar)
+data/
+datasets/
+*.zip
+*.tar
+*.tar.gz
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.npy
+*.npz
+runs/
+wandb/
+
+# credenciais
+kaggle.json
+.env
+
+# python / jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# SO / editor
+.DS_Store
+Thumbs.db
+.vscode/

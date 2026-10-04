@@ -1,0 +1,923 @@
+{
+  "auditoria": [
+    {
+      "cls": "bike",
+      "arquivos": 365,
+      "duplicatas_exatas": 1,
+      "near_duplicates": 4,
+      "formato": ".bmp",
+      "modo": "RGB",
+      "largura_mediana": 640.0,
+      "altura_mediana": 480.0,
+      "lado_menor_min": 480,
+      "pct_tons_de_cinza": 2.2,
+      "após_dedup": 360
+    },
+    {
+      "cls": "cars",
+      "arquivos": 420,
+      "duplicatas_exatas": 0,
+      "near_duplicates": 0,
+      "formato": ".bmp",
+      "modo": "RGB",
+      "largura_mediana": 640.0,
+      "altura_mediana": 480.0,
+      "lado_menor_min": 480,
+      "pct_tons_de_cinza": 4.3,
+      "após_dedup": 420
+    },
+    {
+      "cls": "cats",
+      "arquivos": 202,
+      "duplicatas_exatas": 0,
+      "near_duplicates": 0,
+      "formato": ".jpg",
+      "modo": "RGB",
+      "largura_mediana": 460.0,
+      "altura_mediana": 374.0,
+      "lado_menor_min": 80,
+      "pct_tons_de_cinza": 3.0,
+      "após_dedup": 202
+    },
+    {
+      "cls": "dogs",
+      "arquivos": 202,
+      "duplicatas_exatas": 0,
+      "near_duplicates": 1,
+      "formato": ".jpg",
+      "modo": "RGB",
+      "largura_mediana": 439.5,
+      "altura_mediana": 374.0,
+      "lado_menor_min": 95,
+      "pct_tons_de_cinza": 0.5,
+      "após_dedup": 201
+    },
+    {
+      "cls": "flowers",
+      "arquivos": 210,
+      "duplicatas_exatas": 0,
+      "near_duplicates": 0,
+      "formato": ".png",
+      "modo": "RGBA",
+      "largura_mediana": 128.0,
+      "altura_mediana": 128.0,
+      "lado_menor_min": 128,
+      "pct_tons_de_cinza": 1.4,
+      "após_dedup": 210
+    },
+    {
+      "cls": "horses",
+      "arquivos": 202,
+      "duplicatas_exatas": 19,
+      "near_duplicates": 6,
+      "formato": ".jpg",
+      "modo": "RGB",
+      "largura_mediana": 259.0,
+      "altura_mediana": 194.0,
+      "lado_menor_min": 115,
+      "pct_tons_de_cinza": 3.0,
+      "após_dedup": 177
+    },
+    {
+      "cls": "human",
+      "arquivos": 202,
+      "duplicatas_exatas": 19,
+      "near_duplicates": 11,
+      "formato": ".jpg",
+      "modo": "RGB",
+      "largura_mediana": 188.0,
+      "altura_mediana": 257.5,
+      "lado_menor_min": 88,
+      "pct_tons_de_cinza": 10.4,
+      "após_dedup": 172
+    }
+  ],
+  "n_total_bruto": 1803,
+  "n_duplicatas": 39,
+  "n_final": 1742,
+  "n_near_duplicates": 22,
+  "split": {
+    "train": {
+      "bike": 252,
+      "cars": 294,
+      "cats": 141,
+      "dogs": 141,
+      "flowers": 147,
+      "horses": 124,
+      "human": 120,
+      "total": 1219
+    },
+    "val": {
+      "bike": 54,
+      "cars": 63,
+      "cats": 30,
+      "dogs": 30,
+      "flowers": 31,
+      "horses": 27,
+      "human": 26,
+      "total": 261
+    },
+    "test": {
+      "bike": 54,
+      "cars": 63,
+      "cats": 31,
+      "dogs": 30,
+      "flowers": 32,
+      "horses": 26,
+      "human": 26,
+      "total": 262
+    }
+  },
+  "modelos": [
+    {
+      "modelo": "ResNet-50",
+      "parâmetros (M)": 25.56,
+      "GFLOPs": 4.09,
+      "ImageNet top-1 (%)": 80.86,
+      "dim. features": 2048,
+      "img/s (inferência, batch 64)": 12.48,
+      "VRAM batch 64 (GB)": null
+    },
+    {
+      "modelo": "EfficientNet-B0",
+      "parâmetros (M)": 5.29,
+      "GFLOPs": 0.39,
+      "ImageNet top-1 (%)": 77.69,
+      "dim. features": 1280,
+      "img/s (inferência, batch 64)": 40.55,
+      "VRAM batch 64 (GB)": null
+    }
+  ],
+  "params_total": 23522375,
+  "params_treinaveis": 14343,
+  "historico": {
+    "epoch": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40
+    ],
+    "train_loss": [
+      1.17856,
+      0.36939,
+      0.18636,
+      0.1253,
+      0.09439,
+      0.07565,
+      0.06197,
+      0.05249,
+      0.0455,
+      0.04019,
+      0.03565,
+      0.03187,
+      0.02882,
+      0.02641,
+      0.02438,
+      0.02256,
+      0.02106,
+      0.01979,
+      0.01875,
+      0.01786,
+      0.01707,
+      0.01638,
+      0.01578,
+      0.01526,
+      0.01478,
+      0.01437,
+      0.01403,
+      0.01374,
+      0.01348,
+      0.01327,
+      0.01308,
+      0.01293,
+      0.01281,
+      0.01271,
+      0.01263,
+      0.01258,
+      0.01254,
+      0.01252,
+      0.0125,
+      0.0125
+    ],
+    "train_acc": [
+      0.82937,
+      0.98934,
+      0.9918,
+      0.99672,
+      0.99836,
+      0.99918,
+      0.99918,
+      0.99918,
+      0.99918,
+      0.99918,
+      0.99918,
+      0.99918,
+      0.99918,
+      0.99918,
+      0.99918,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "val_loss": [
+      0.56622,
+      0.25305,
+      0.16436,
+      0.12419,
+      0.10161,
+      0.08654,
+      0.07538,
+      0.06682,
+      0.0604,
+      0.056,
+      0.05186,
+      0.04843,
+      0.04505,
+      0.04242,
+      0.04046,
+      0.0392,
+      0.0375,
+      0.03637,
+      0.03529,
+      0.03435,
+      0.03351,
+      0.03266,
+      0.03205,
+      0.03163,
+      0.0312,
+      0.03076,
+      0.03044,
+      0.03013,
+      0.02983,
+      0.02958,
+      0.02942,
+      0.02928,
+      0.02915,
+      0.02909,
+      0.02904,
+      0.02899,
+      0.02898,
+      0.02896,
+      0.02895,
+      0.02895
+    ],
+    "val_acc": [
+      0.98851,
+      0.98467,
+      0.98467,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234,
+      0.99234
+    ]
+  },
+  "melhor_epoch": 40,
+  "test": {
+    "accuracy": 0.9923664122137404,
+    "balanced_acc": 0.9950869236583522,
+    "f1_macro": 0.9950869236583522,
+    "acc_por_classe": {
+      "bike": 0.9814814814814815,
+      "cars": 0.9841269841269841,
+      "cats": 1.0,
+      "dogs": 1.0,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 1.0
+    }
+  },
+  "val": {
+    "accuracy": 0.9923371647509579,
+    "balanced_acc": 0.9899470899470899,
+    "f1_macro": 0.9902749797733137,
+    "acc_por_classe": {
+      "bike": 1.0,
+      "cars": 1.0,
+      "cats": 0.9666666666666667,
+      "dogs": 1.0,
+      "flowers": 1.0,
+      "horses": 0.9629629629629629,
+      "human": 1.0
+    }
+  },
+  "cm_test": [
+    [
+      53,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      62,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      31,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      30,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      32,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      26,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      26
+    ]
+  ],
+  "seeds": {
+    "accuracy": {
+      "mean": 0.9923664122137404,
+      "std": 0.0
+    },
+    "f1_macro": {
+      "mean": 0.9950869236583522,
+      "std": 0.0
+    },
+    "bike": {
+      "mean": 0.9814814814814815,
+      "std": 0.0
+    },
+    "cars": {
+      "mean": 0.984126984126984,
+      "std": 1.2412670766236366e-16
+    },
+    "cats": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "dogs": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "flowers": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "horses": {
+      "mean": 1.0,
+      "std": 0.0
+    },
+    "human": {
+      "mean": 1.0,
+      "std": 0.0
+    }
+  },
+  "imagenet_top3": [
+    {
+      "classe": "bike",
+      "top-3 classes ImageNet (fração das imagens)": "mountain bike (45%) · bicycle-built-for-two (29%) · tricycle (8%)",
+      "nº de classes ImageNet distintas": 30
+    },
+    {
+      "classe": "cars",
+      "top-3 classes ImageNet (fração das imagens)": "beach wagon (18%) · minivan (16%) · cab (8%)",
+      "nº de classes ImageNet distintas": 73
+    },
+    {
+      "classe": "cats",
+      "top-3 classes ImageNet (fração das imagens)": "Egyptian cat (32%) · tabby (30%) · tiger cat (9%)",
+      "nº de classes ImageNet distintas": 24
+    },
+    {
+      "classe": "dogs",
+      "top-3 classes ImageNet (fração das imagens)": "American Staffordshire terrier (10%) · Labrador retriever (7%) · kelpie (5%)",
+      "nº de classes ImageNet distintas": 68
+    },
+    {
+      "classe": "flowers",
+      "top-3 classes ImageNet (fração das imagens)": "daisy (36%) · pot (20%) · earthstar (8%)",
+      "nº de classes ImageNet distintas": 22
+    },
+    {
+      "classe": "horses",
+      "top-3 classes ImageNet (fração das imagens)": "sorrel (71%) · Saluki (9%) · Great Dane (4%)",
+      "nº de classes ImageNet distintas": 24
+    },
+    {
+      "classe": "human",
+      "top-3 classes ImageNet (fração das imagens)": "suit (17%) · sorrel (10%) · Windsor tie (8%)",
+      "nº de classes ImageNet distintas": 48
+    }
+  ],
+  "near_dup_test_095": 2,
+  "acc_test_sem_near_dup": 0.9923076923076923,
+  "suspeitas_rotulo": [
+    {
+      "arquivo": "bike_097.bmp",
+      "rótulo": "bike",
+      "maioria dos vizinhos": "cars",
+      "discordância": 0.9,
+      "split": "train"
+    },
+    {
+      "arquivo": "rider-79.jpg",
+      "rótulo": "human",
+      "maioria dos vizinhos": "horses",
+      "discordância": 0.9,
+      "split": "train"
+    },
+    {
+      "arquivo": "bike_050.bmp",
+      "rótulo": "bike",
+      "maioria dos vizinhos": "cars",
+      "discordância": 0.9,
+      "split": "test"
+    },
+    {
+      "arquivo": "bike_095.bmp",
+      "rótulo": "bike",
+      "maioria dos vizinhos": "cars",
+      "discordância": 0.8,
+      "split": "train"
+    },
+    {
+      "arquivo": "bike_034.bmp",
+      "rótulo": "bike",
+      "maioria dos vizinhos": "cars",
+      "discordância": 0.8,
+      "split": "train"
+    },
+    {
+      "arquivo": "cat.44.jpg",
+      "rótulo": "cats",
+      "maioria dos vizinhos": "human",
+      "discordância": 0.8,
+      "split": "train"
+    },
+    {
+      "arquivo": "bike_047.bmp",
+      "rótulo": "bike",
+      "maioria dos vizinhos": "cars",
+      "discordância": 0.7,
+      "split": "train"
+    },
+    {
+      "arquivo": "carsgraz_152.bmp",
+      "rótulo": "cars",
+      "maioria dos vizinhos": "bike",
+      "discordância": 0.7,
+      "split": "test"
+    }
+  ],
+  "sensibilidade": {
+    "original": {
+      "bike": 0.9815,
+      "cars": 0.9841,
+      "cats": 1.0,
+      "dogs": 1.0,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 1.0,
+      "GLOBAL": 0.9924
+    },
+    "flip horizontal": {
+      "bike": 0.963,
+      "cars": 0.9841,
+      "cats": 1.0,
+      "dogs": 1.0,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 1.0,
+      "GLOBAL": 0.9885
+    },
+    "flip vertical": {
+      "bike": 1.0,
+      "cars": 1.0,
+      "cats": 0.9677,
+      "dogs": 0.9,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 0.9615,
+      "GLOBAL": 0.9809
+    },
+    "rotação 15°": {
+      "bike": 0.9815,
+      "cars": 0.9841,
+      "cats": 1.0,
+      "dogs": 0.9667,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 0.9615,
+      "GLOBAL": 0.9847
+    },
+    "rotação 90°": {
+      "bike": 0.9815,
+      "cars": 0.9841,
+      "cats": 0.9677,
+      "dogs": 0.9667,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 1.0,
+      "GLOBAL": 0.9847
+    },
+    "grayscale": {
+      "bike": 0.9444,
+      "cars": 0.9841,
+      "cats": 1.0,
+      "dogs": 1.0,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 1.0,
+      "GLOBAL": 0.9847
+    },
+    "matiz +0,25": {
+      "bike": 0.963,
+      "cars": 1.0,
+      "cats": 1.0,
+      "dogs": 0.9667,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 1.0,
+      "GLOBAL": 0.9885
+    },
+    "jitter brilho/contr./sat.": {
+      "bike": 0.963,
+      "cars": 0.9841,
+      "cats": 1.0,
+      "dogs": 1.0,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 1.0,
+      "GLOBAL": 0.9885
+    },
+    "zoom 50% do lado": {
+      "bike": 0.9259,
+      "cars": 0.9683,
+      "cats": 0.9355,
+      "dogs": 0.9333,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 1.0,
+      "GLOBAL": 0.9618
+    },
+    "zoom 35% do lado": {
+      "bike": 0.8889,
+      "cars": 0.873,
+      "cats": 0.9677,
+      "dogs": 0.7,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 0.9231,
+      "GLOBAL": 0.9008
+    },
+    "resize sem crop (squash)": {
+      "bike": 0.9815,
+      "cars": 1.0,
+      "cats": 1.0,
+      "dogs": 0.9667,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 1.0,
+      "GLOBAL": 0.9924
+    },
+    "baixa resolução 64px": {
+      "bike": 0.7778,
+      "cars": 0.9841,
+      "cats": 1.0,
+      "dogs": 0.9333,
+      "flowers": 1.0,
+      "horses": 1.0,
+      "human": 0.9615,
+      "GLOBAL": 0.9389
+    }
+  },
+  "normalizacao": [
+    {
+      "normalização": "ImageNet (padrão dos pesos)",
+      "acc test (3 seeds)": "0.9924 ± 0.0000",
+      "F1 macro test": "0.9951",
+      "val loss mín.": 0.02895132265985012,
+      "train loss ep 5": 0.09439385896265946,
+      "norma média das features": 12.197854995727539
+    },
+    {
+      "normalização": "sem normalização ([0,1])",
+      "acc test (3 seeds)": "0.9847 ± 0.0000",
+      "F1 macro test": "0.9870",
+      "val loss mín.": 0.025236988440155983,
+      "train loss ep 5": 0.09376560343495151,
+      "norma média das features": 12.22838020324707
+    },
+    {
+      "normalização": "média/desvio do dataset",
+      "acc test (3 seeds)": "0.9924 ± 0.0000",
+      "F1 macro test": "0.9951",
+      "val loss mín.": 0.030159711837768555,
+      "train loss ep 5": 0.0943546167607675,
+      "norma média das features": 12.180410385131836
+    }
+  ],
+  "augmentation": {
+    "resumo": {
+      "sem augmentation": {
+        "acc test limpo": 0.9924,
+        "± (3 seeds)": 0.0,
+        "acc média test transformado": 0.9728,
+        "± (3 seeds) ": 0.0004
+      },
+      "geométrica": {
+        "acc test limpo": 0.9924,
+        "± (3 seeds)": 0.0,
+        "acc média test transformado": 0.9717,
+        "± (3 seeds) ": 0.0002
+      },
+      "cor": {
+        "acc test limpo": 0.9924,
+        "± (3 seeds)": 0.0,
+        "acc média test transformado": 0.9728,
+        "± (3 seeds) ": 0.0004
+      },
+      "escala": {
+        "acc test limpo": 0.9924,
+        "± (3 seeds)": 0.0,
+        "acc média test transformado": 0.9759,
+        "± (3 seeds) ": 0.0003
+      },
+      "combinada": {
+        "acc test limpo": 0.9924,
+        "± (3 seeds)": 0.0,
+        "acc média test transformado": 0.9769,
+        "± (3 seeds) ": 0.0007
+      }
+    },
+    "por_classe": {
+      "sem augmentation": {
+        "bike": 0.9815,
+        "cars": 0.9841,
+        "cats": 1.0,
+        "dogs": 1.0,
+        "flowers": 1.0,
+        "horses": 1.0,
+        "human": 1.0
+      },
+      "geométrica": {
+        "bike": 0.9815,
+        "cars": 0.9841,
+        "cats": 1.0,
+        "dogs": 1.0,
+        "flowers": 1.0,
+        "horses": 1.0,
+        "human": 1.0
+      },
+      "cor": {
+        "bike": 0.9815,
+        "cars": 0.9841,
+        "cats": 1.0,
+        "dogs": 1.0,
+        "flowers": 1.0,
+        "horses": 1.0,
+        "human": 1.0
+      },
+      "escala": {
+        "bike": 0.9815,
+        "cars": 0.9841,
+        "cats": 1.0,
+        "dogs": 1.0,
+        "flowers": 1.0,
+        "horses": 1.0,
+        "human": 1.0
+      },
+      "combinada": {
+        "bike": 0.9815,
+        "cars": 0.9841,
+        "cats": 1.0,
+        "dogs": 1.0,
+        "flowers": 1.0,
+        "horses": 1.0,
+        "human": 1.0
+      }
+    },
+    "por_transformacao": {
+      "sem augmentation": {
+        "flip horizontal": 0.9898,
+        "flip vertical": 0.9822,
+        "rotação 15°": 0.9835,
+        "rotação 90°": 0.9835,
+        "grayscale": 0.9873,
+        "matiz +0,25": 0.9873,
+        "jitter brilho/contr./sat.": 0.9898,
+        "zoom 50% do lado": 0.9618,
+        "zoom 35% do lado": 0.9008,
+        "resize sem crop (squash)": 0.9949,
+        "baixa resolução 64px": 0.9402
+      },
+      "geométrica": {
+        "flip horizontal": 0.9885,
+        "flip vertical": 0.9707,
+        "rotação 15°": 0.9835,
+        "rotação 90°": 0.9809,
+        "grayscale": 0.9873,
+        "matiz +0,25": 0.9924,
+        "jitter brilho/contr./sat.": 0.9924,
+        "zoom 50% do lado": 0.9567,
+        "zoom 35% do lado": 0.9008,
+        "resize sem crop (squash)": 0.9949,
+        "baixa resolução 64px": 0.9402
+      },
+      "cor": {
+        "flip horizontal": 0.9885,
+        "flip vertical": 0.9809,
+        "rotação 15°": 0.9835,
+        "rotação 90°": 0.9822,
+        "grayscale": 0.9885,
+        "matiz +0,25": 0.9911,
+        "jitter brilho/contr./sat.": 0.9924,
+        "zoom 50% do lado": 0.9631,
+        "zoom 35% do lado": 0.8944,
+        "resize sem crop (squash)": 0.9936,
+        "baixa resolução 64px": 0.9427
+      },
+      "escala": {
+        "flip horizontal": 0.9924,
+        "flip vertical": 0.9771,
+        "rotação 15°": 0.9847,
+        "rotação 90°": 0.9809,
+        "grayscale": 0.9885,
+        "matiz +0,25": 0.9911,
+        "jitter brilho/contr./sat.": 0.9924,
+        "zoom 50% do lado": 0.958,
+        "zoom 35% do lado": 0.9262,
+        "resize sem crop (squash)": 0.9924,
+        "baixa resolução 64px": 0.9517
+      },
+      "combinada": {
+        "flip horizontal": 0.9911,
+        "flip vertical": 0.9885,
+        "rotação 15°": 0.9809,
+        "rotação 90°": 0.9835,
+        "grayscale": 0.9924,
+        "matiz +0,25": 0.9924,
+        "jitter brilho/contr./sat.": 0.9936,
+        "zoom 50% do lado": 0.9618,
+        "zoom 35% do lado": 0.902,
+        "resize sem crop (squash)": 1.0,
+        "baixa resolução 64px": 0.9593
+      }
+    }
+  },
+  "comparacao_backbones": {
+    "ResNet-50": {
+      "params backbone (M)": 25.56,
+      "dim. features": 2048.0,
+      "params treináveis (head)": 14343.0,
+      "tempo de extração (s)": 128.8491,
+      "acc test (3 seeds)": 0.9924,
+      "F1 macro test": 0.9951
+    },
+    "EfficientNet-B0": {
+      "params backbone (M)": 5.29,
+      "dim. features": 1280.0,
+      "params treináveis (head)": 8967.0,
+      "tempo de extração (s)": 41.0975,
+      "acc test (3 seeds)": 0.9847,
+      "F1 macro test": 0.9841
+    }
+  },
+  "tempos_s": {
+    "1_dataset": 20.1,
+    "3_1_extracao_r50": 128.8,
+    "3_1_treino_head": 1.1,
+    "3_1_tsne": 5.7,
+    "3_2a_sensibilidade": 227.4,
+    "3_2b_normalizacao": 278.7,
+    "3_2c_extracao_aug": 1109.5,
+    "3_2c_treinos": 39.1,
+    "4_effnet": 43.9,
+    "total": 1892.5
+  },
+  "device": "CPU",
+  "vram_pico_gb": null,
+  "ram_processo_gb": 1.066889216
+}
